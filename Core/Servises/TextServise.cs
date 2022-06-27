@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Legasy.Core.Servises
@@ -25,6 +26,11 @@ namespace Legasy.Core.Servises
         public static string ConvertDescriptionToString(DescriptionClass _description)
         {
             return $"{_description.Header}\t{_description.Qualification}";
+        }
+
+        public static bool IsNumberValid(string _value)
+        {
+            return Regex.IsMatch(_value, @"^\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d\d");
         }
     }
 }

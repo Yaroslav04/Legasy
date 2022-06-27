@@ -1,6 +1,91 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:model="clr-namespace:Legasy.Core.Model"
+             xmlns:viewmodel="clr-namespace:Legasy.Core.ViewModel"
+             x:DataType="viewmodel:MainPageViewModel"
              x:Class="Legasy.MainPage">
+    <Grid Margin="0,10,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"></ColumnDefinition>
+            <ColumnDefinition Width="5*"></ColumnDefinition>
+            <ColumnDefinition Width="3*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
 
+        <Frame Grid.Column="0" HasShadow="True" CornerRadius="15" Margin="2" Padding="20">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="5*"></RowDefinition>
+                    <RowDefinition Height="2*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <ScrollView VerticalOptions="FillAndExpand" Grid.Row="0">
+                    <StackLayout>
+                        
+                        <Entry Margin="3,3,3,3" Placeholder="Поиск"
+                       Text="{Binding SearchTextSearchPanel}"></Entry>
+
+                        <Picker Margin="3,3,3,3" Title="Статья"
+                        ItemsSource="{Binding QualificationsSearchPanel}" SelectedItem="{Binding SelectedQualificationSearchPanel}"></Picker>
+
+                    </StackLayout>
+                </ScrollView>
+
+                <StackLayout Grid.Row="1">
+                    <StackLayout HorizontalOptions="Fill">
+                        
+                        <Button Text="Поиск" CornerRadius="15" Margin="3,3,3,3" 
+                        Command="{Binding SearchCommand}"/>
+                        
+                        <Button Text="Очистить" CornerRadius="15" Margin="3,3,3,3" 
+                        Command="{Binding ClearCommand}"/>
+                        
+                    </StackLayout>
+                </StackLayout>
+            </Grid>
+        </Frame>
+
+        <Frame Grid.Column="1" HasShadow="True" CornerRadius="15" Margin="2" Padding="20">
+            <CollectionView  x:Name="ItemsListView" 
+                ItemsSource="{Binding Items}"
+                SelectionMode="None">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <ContentView>
+                            <Frame HasShadow="True" CornerRadius="15" Margin="2" Padding="20">
+                                <StackLayout x:DataType="model:CaseClass">
+                                    
+                                    <HorizontalStackLayout WidthRequest="1000" HorizontalOptions="StartAndExpand" Spacing="10">
+                                        <Label Text="{Binding Name}"  LineBreakMode="NoWrap"></Label>
+                                        <Label  Text="{Binding Decsription.Header}"  LineBreakMode="NoWrap"></Label>
+                                        <Label  Text="{Binding Decsription.Qualification}"  LineBreakMode="NoWrap"></Label>
+                                    </HorizontalStackLayout>
+
+                                    <StackLayout.GestureRecognizers>
+                                        <TapGestureRecognizer 
+                                NumberOfTapsRequired="1"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainPageViewModel}}, Path=ItemTappedSingle}"		
+                                CommandParameter="{Binding .}">
+                                        </TapGestureRecognizer>
+                                        <TapGestureRecognizer 
+                                NumberOfTapsRequired="2"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainPageViewModel}}, Path=ItemTappedDouble}"		
+                                CommandParameter="{Binding .}">
+                                        </TapGestureRecognizer>
+                                    </StackLayout.GestureRecognizers>
+
+                                </StackLayout>
+                            </Frame>
+                        </ContentView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Frame>
+
+        <Frame Grid.Column="2" HasShadow="True" CornerRadius="15" Margin="2" Padding="20">
+            <StackLayout>
+               
+            </StackLayout>
+        </Frame>
+
+    </Grid>
 </ContentPage>

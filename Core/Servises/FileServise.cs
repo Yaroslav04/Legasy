@@ -82,7 +82,7 @@ namespace Legasy.Core.Servises
                 }
                 else
                 {
-                    return null;
+                    return descriptionClass;
                 }
             }
 
@@ -146,57 +146,44 @@ namespace Legasy.Core.Servises
             }
         }
 
+        public static void WorkFolderUpdate()
+        {
+            foreach (var item in Directory.GetDirectories(App.GeneralPath))
+            {
+                foreach (var directory in Directory.GetDirectories(item))
+                {             
+                    if (directory.Replace(item, "") == @"\Data")
+                    {                   
+                        foreach (var workFolder in App.WorkFolders)
+                        {
+                            if (!Directory.Exists(Path.Combine(directory, workFolder)))
+                            {                              
+                                Directory.CreateDirectory(Path.Combine(directory, workFolder));
+                            }
+                        }                     
+                    }
+                }
+            }
+        }
+
+        public static void Clean()
+        {
+            //удалить пустые папки
+            //foreach (var item in Directory.GetDirectories(App.GeneralPath))
+            //{
+            //    foreach (var directory in Directory.GetDirectories(item))
+            //    {
+            //        if (Directory.GetFiles(directory).Length == 0)
+            //        {
+            //            Directory.Delete(directory, true);
+            //        }
+            //    }
+            //}
 
 
 
-        /// <summary>
-        ///Служебная функция при запуске - создание новых папок и описаний
-        /// </summary>
-        //static void CreateNewFoldersAndDescriptions()
-        //{
-        //    //Почистить файлы в папке
-        //    //foreach (var item in Directory.GetDirectories(generalPath))
-        //    //{
-        //    //    if (Directory.Exists(item + @"\Data\"))
-        //    //    {
-        //    //        System.IO.DirectoryInfo di = new DirectoryInfo(item + @"\Data\");
-
-        //    //        foreach (FileInfo file in di.GetFiles())
-        //    //        {
-        //    //            file.Delete();
-        //    //        }
-        //    //        foreach (DirectoryInfo dir in di.GetDirectories())
-        //    //        {
-        //    //            dir.Delete(true);
-        //    //        }
-        //    //    }
-
-        //    //    if (File.Exists(item + @"\description.ini"))
-        //    //    {
-        //    //        File.Delete(item + @"\description.ini");
-        //    //    }
-        //    //}
-
-        //    foreach (var item in Directory.GetDirectories(App.GeneralPath))
-        //    {
-        //        foreach (var folder in FolderAdd)
-        //        {
-        //            if (!Directory.Exists(item + @"\" + folder))
-        //            {
-        //                Directory.CreateDirectory(item + @"\" + folder);
-        //            }
-        //        }
-
-        //        //Добавить описание в папки
-        //        //if (!File.Exists(item + @"\Data\description.ini"))
-        //        //{
-        //        //    using (StreamWriter sw = new StreamWriter(item + @"\Data\description.ini"))
-        //        //    {
-        //        //        sw.Write("");
-        //        //    }
-        //        //}
-        //    }
-        //}
+            
+        }
     }
 }
 

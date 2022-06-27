@@ -28,7 +28,9 @@ public partial class App : Application
                 {
                     "Вказівки",
                     "Постанови про скасування закриття",
-                    "Підслідність"
+                    "Підслідність",
+                    "Допит",
+                    "Обшук"
                 };
             }
             return workFolders;

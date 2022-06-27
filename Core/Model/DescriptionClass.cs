@@ -10,5 +10,11 @@ namespace Legasy.Core.Model
     {
         public string Header { get; set; }
         public string Qualification { get; set; }
+
+        public DescriptionClass()
+        {
+            Header = "";
+            Qualification = "";
+        }
     }
 }
