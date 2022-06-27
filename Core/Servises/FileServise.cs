@@ -116,6 +116,18 @@ namespace Legasy.Core.Servises
             }
         }
 
+        public static void DeleteDirectory(string _name)
+        {
+            if (Directory.Exists(Path.Combine(App.GeneralPath, _name)))
+            {
+                try
+                {
+                    Directory.Delete(Path.Combine(App.GeneralPath, _name), true);              
+                }
+                catch { }
+            }
+        }
+
         public static void CreateNewDescription(string _name, DescriptionClass _description)
         {
             try

@@ -20,6 +20,8 @@ namespace Legasy.Core.ViewModel
             ItemTappedDouble = new Command<CaseClass>(OnDoubleItemTapped);
             SearchCommand = new Command(Search);
             ClearCommand = new Command(Clear);
+            EditCommand = new Command(Edit);
+            DeleteCommand = new Command(Delete);
             Items = new ObservableCollection<CaseClass>();
             DataBaseServise.DataBaseUpload();
             LoadAllItems();
@@ -62,6 +64,49 @@ namespace Legasy.Core.ViewModel
                 SetProperty(ref selectedQualificationSearchPanel, value);
             }
         }
+
+        //Description
+
+        private CaseClass itemDescription;
+        public CaseClass ItemDescription
+        {
+            get => itemDescription;
+            set
+            {
+                SetProperty(ref itemDescription, value);
+            }
+        }
+
+        private string qualificationDescription;
+        public string QualificationDescription
+        {
+            get => qualificationDescription;
+            set
+            {
+                SetProperty(ref qualificationDescription, value);
+            }
+        }
+
+        private string nameDescription;
+        public string NameDescription
+        {
+            get => nameDescription;
+            set
+            {
+                SetProperty(ref nameDescription, value);
+            }
+        }
+
+        private string descriptionDescription;
+        public string DescriptionDescription
+        {
+            get => descriptionDescription;
+            set
+            {
+                SetProperty(ref descriptionDescription, value);
+            }
+        }
+
         #endregion
 
         #region Commands
@@ -69,6 +114,8 @@ namespace Legasy.Core.ViewModel
         public Command<CaseClass> ItemTappedDouble { get; }
         public Command SearchCommand { get; }
         public Command ClearCommand { get; }
+        public Command EditCommand { get; }
+        public Command DeleteCommand { get; }
 
         #endregion
 
@@ -83,9 +130,15 @@ namespace Legasy.Core.ViewModel
             FileServise.OpenFolder(_item.Path);
         }
 
-        private void OnSingleItemTapped(CaseClass obj)
+        private void OnSingleItemTapped(CaseClass item)
         {
-
+            if (item != null)
+            {
+                ItemDescription = item;
+                NameDescription = item.Name;
+                QualificationDescription = item.Decsription.Qualification;
+                DescriptionDescription = item.Decsription.Header;
+            }
         }
 
         private void Clear()
@@ -95,6 +148,10 @@ namespace Legasy.Core.ViewModel
             LoadAllItems();
             SearchTextSearchPanel = null;
             SelectedQualificationSearchPanel = null;
+            NameDescription = null;
+            QualificationDescription = null;
+            DescriptionDescription = null;
+            ItemDescription = null;
         }
 
         private void LoadAllItems()
@@ -142,9 +199,14 @@ namespace Legasy.Core.ViewModel
                 {
                     if (SearchTextSearchPanel.Length > 2)
                     {
-                        result = result.Where(x => x.Decsription.Header == SearchTextSearchPanel).ToList();
+                        result = result.Where(x => x.Decsription.Header.Contains(SearchTextSearchPanel, StringComparison.OrdinalIgnoreCase)).ToList();
                     }
                 }
+            }
+
+            if (SelectedQualificationSearchPanel != null)
+            {
+                result = result.Where(x => x.Decsription.Qualification == SelectedQualificationSearchPanel).ToList();
             }
        
             Items.Clear();
@@ -174,6 +236,33 @@ namespace Legasy.Core.ViewModel
                return descriptionClass;
             }
             else return null;
+        }
+
+        private void Edit()
+        {
+            if (ItemDescription != null)
+            {
+                Debug.WriteLine(ItemDescription.Name);
+                DescriptionClass descriptionClass = new DescriptionClass();
+                descriptionClass.Qualification = QualificationDescription;
+                descriptionClass.Header = DescriptionDescription;
+                FileServise.UpdateDescription(ItemDescription.Name, descriptionClass);
+                Clear();
+            }
+        }
+
+        private async void Delete()
+        {
+            if (ItemDescription != null)
+            {
+                string _ansver = await Shell.Current.DisplayPromptAsync($"Удалить папку {ItemDescription.Name} {ItemDescription.Decsription.Qualification} {ItemDescription.Decsription.Header}", $"Введите -удалить-:");
+                if (_ansver == "удалить")
+                {
+                    FileServise.DeleteDirectory(ItemDescription.Name);
+                    Clear();
+                }      
+            }
+                
         }
 
         #endregion

@@ -56,8 +56,8 @@
                                     
                                     <HorizontalStackLayout WidthRequest="1000" HorizontalOptions="StartAndExpand" Spacing="10">
                                         <Label Text="{Binding Name}"  LineBreakMode="NoWrap"></Label>
-                                        <Label  Text="{Binding Decsription.Header}"  LineBreakMode="NoWrap"></Label>
                                         <Label  Text="{Binding Decsription.Qualification}"  LineBreakMode="NoWrap"></Label>
+                                        <Label  Text="{Binding Decsription.Header}"  LineBreakMode="NoWrap"></Label>
                                     </HorizontalStackLayout>
 
                                     <StackLayout.GestureRecognizers>
@@ -82,9 +82,40 @@
         </Frame>
 
         <Frame Grid.Column="2" HasShadow="True" CornerRadius="15" Margin="2" Padding="20">
-            <StackLayout>
-               
-            </StackLayout>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="5*"></RowDefinition>
+                    <RowDefinition Height="2*"></RowDefinition>
+                </Grid.RowDefinitions>
+
+                <ScrollView VerticalOptions="FillAndExpand" Grid.Row="0">
+                    <StackLayout>
+                        
+                        <Label Text="Уголовное дело"></Label>
+                        <Entry Margin="3,3,3,3"    
+                       Text="{Binding NameDescription, Mode=TwoWay}"></Entry>
+
+                        <Label Text="Статья"></Label>
+                        <Entry Margin="3,3,3,3" 
+                       Text="{Binding QualificationDescription,  Mode=TwoWay}" MaxLength="3"></Entry>
+
+                        <Label Text="Описание"></Label>
+                        <Entry Margin="3,3,3,3"
+                       Text="{Binding DescriptionDescription,  Mode=TwoWay}"></Entry>
+                        
+                    </StackLayout>
+                </ScrollView>
+
+                <StackLayout Grid.Row="1">
+                    <StackLayout HorizontalOptions="Fill">
+                        <Button Text="Редактировать" CornerRadius="15" Margin="3,3,3,3" 
+                        Command="{Binding EditCommand}"/>
+                        <Button Text="Удалить" CornerRadius="15" Margin="3,3,3,3" 
+                        Command="{Binding DeleteCommand}"/>
+                    </StackLayout>
+                </StackLayout>
+
+            </Grid>
         </Frame>
 
     </Grid>
