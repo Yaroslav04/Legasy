@@ -27,6 +27,10 @@
                         <Picker Margin="3,3,3,3" Title="Статья"
                         ItemsSource="{Binding QualificationsSearchPanel}" SelectedItem="{Binding SelectedQualificationSearchPanel}"></Picker>
 
+                        <Picker Margin="3,3,3,3" Title="Документы"
+                        ItemsSource="{Binding WorkFolders}" SelectedItem="{Binding WorkFolder}"></Picker>
+
+
                     </StackLayout>
                 </ScrollView>
 

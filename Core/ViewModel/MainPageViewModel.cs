@@ -25,11 +25,14 @@ namespace Legasy.Core.ViewModel
             Items = new ObservableCollection<CaseClass>();
             DataBaseServise.DataBaseUpload();
             LoadAllItems();
+
             QualificationsSearchPanel = new ObservableCollection<string>();
             for (int i = 109; i < 447; i++)
             {
                 QualificationsSearchPanel.Add(i.ToString());
             }
+
+            WorkFolders = new ObservableCollection<string>(App.WorkFolders);
 
             FileServise.WorkFolderUpdate();
         }
@@ -42,6 +45,18 @@ namespace Legasy.Core.ViewModel
         #region Properties
 
         public ObservableCollection<CaseClass> Items { get; }
+
+        public ObservableCollection<string> WorkFolders { get; }
+
+        private string workFolder;
+        public string WorkFolder
+        {
+            get => workFolder;
+            set
+            {
+                SetProperty(ref workFolder, value);
+            }
+        }
 
         private string searchTextSearchPanel;
         public string SearchTextSearchPanel
@@ -152,6 +167,7 @@ namespace Legasy.Core.ViewModel
             QualificationDescription = null;
             DescriptionDescription = null;
             ItemDescription = null;
+            WorkFolder = null;
         }
 
         private void LoadAllItems()
@@ -199,20 +215,73 @@ namespace Legasy.Core.ViewModel
                 {
                     if (SearchTextSearchPanel.Length > 2)
                     {
-                        result = result.Where(x => x.Decsription.Header.Contains(SearchTextSearchPanel, StringComparison.OrdinalIgnoreCase)).ToList();
+                        var subresult = result = result.Where(x => x.Decsription.Header.Contains(SearchTextSearchPanel, StringComparison.OrdinalIgnoreCase)).ToList();
+                        if (subresult.Count > 0)
+                        {
+                            result.Clear();
+                            result.AddRange(subresult);
+                        }
+                        else
+                        {
+                            Clear();
+                        }
                     }
                 }
             }
 
             if (SelectedQualificationSearchPanel != null)
             {
-                result = result.Where(x => x.Decsription.Qualification == SelectedQualificationSearchPanel).ToList();
+                var subresult = result.Where(x => x.Decsription.Qualification == SelectedQualificationSearchPanel).ToList();
+                if (subresult.Count > 0)
+                {
+                    result.Clear();
+                    result.AddRange(subresult);
+                }
+                else
+                {
+                    Clear();
+                }
+               
+            }
+
+            if (WorkFolder != null)
+            {
+                var subresult = new List<CaseClass>();
+                result = result.Where(x => x.Files.Count > 0).ToList();
+                foreach (var item in result)
+                {
+                    foreach (var file in item.Files)
+                    {
+                        if (file.Type == WorkFolder)
+                        {
+                            subresult.Add(item);
+                        }
+                    }
+                }
+                if (subresult.Count > 0)
+                {
+                    subresult = subresult.Distinct().ToList();
+                    result.Clear();
+                    result.AddRange(subresult);
+                }
+                else
+                {
+                    Clear();
+                }
             }
        
-            Items.Clear();
-            foreach (var item in result)
+            
+            if (result.Count > 0)
             {
-                Items.Add(item);
+                Items.Clear();
+                foreach (var item in result)
+                {
+                    Items.Add(item);
+                }
+            }
+            else
+            {
+                Clear();
             }
         }
 
