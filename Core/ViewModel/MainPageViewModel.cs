@@ -23,9 +23,6 @@ namespace Legasy.Core.ViewModel
             EditCommand = new Command(Edit);
             DeleteCommand = new Command(Delete);
             Items = new ObservableCollection<CaseClass>();
-            DataBaseServise.DataBaseUpload();
-            LoadAllItems();
-
             QualificationsSearchPanel = new ObservableCollection<string>();
             for (int i = 109; i < 447; i++)
             {
@@ -34,6 +31,7 @@ namespace Legasy.Core.ViewModel
 
             WorkFolders = new ObservableCollection<string>(App.WorkFolders);
 
+            Clear();       
             FileServise.WorkFolderUpdate();
         }
 
@@ -215,9 +213,10 @@ namespace Legasy.Core.ViewModel
                 {
                     if (SearchTextSearchPanel.Length > 2)
                     {
-                        var subresult = result = result.Where(x => x.Decsription.Header.Contains(SearchTextSearchPanel, StringComparison.OrdinalIgnoreCase)).ToList();
+                        var subresult = result.Where(x => x.Decsription.Header.Contains(SearchTextSearchPanel, StringComparison.OrdinalIgnoreCase)).ToList();
+                        Debug.WriteLine(subresult.Count);
                         if (subresult.Count > 0)
-                        {
+                        {                          
                             result.Clear();
                             result.AddRange(subresult);
                         }
@@ -228,6 +227,7 @@ namespace Legasy.Core.ViewModel
                     }
                 }
             }
+            Debug.WriteLine(result.Count);
 
             if (SelectedQualificationSearchPanel != null)
             {
@@ -269,7 +269,7 @@ namespace Legasy.Core.ViewModel
                     Clear();
                 }
             }
-       
+            Debug.WriteLine(result.Count);
             
             if (result.Count > 0)
             {
