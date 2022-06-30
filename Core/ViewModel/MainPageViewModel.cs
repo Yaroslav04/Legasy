@@ -177,8 +177,8 @@ namespace Legasy.Core.ViewModel
             }
         }
 
-        private async void Search(object obj)
-        {
+        private async void Search()
+        {     
             var result = new List<CaseClass>();
             result.AddRange(App.DataBase);
 
@@ -324,7 +324,7 @@ namespace Legasy.Core.ViewModel
         {
             if (ItemDescription != null)
             {
-                string _ansver = await Shell.Current.DisplayPromptAsync($"Удалить папку {ItemDescription.Name} {ItemDescription.Decsription.Qualification} {ItemDescription.Decsription.Header}", $"Введите -удалить-:");
+                string _ansver = await Shell.Current.DisplayPromptAsync($"Удалить папку {ItemDescription.Name} {ItemDescription.Decsription.Qualification} {ItemDescription.Decsription.Header}", $"Введите [удалить]:");
                 if (_ansver == "удалить")
                 {
                     FileServise.DeleteDirectory(ItemDescription.Name);
