@@ -17,6 +17,20 @@ public partial class App : Application
         }
     }
 
+    static List<string> qualificationsSearchPanel;
+
+    public static List<string> QualificationsSearchPanel
+    {
+        get
+        {
+            if (qualificationsSearchPanel == null)
+            {
+                qualificationsSearchPanel = new List<string>();
+            }
+            return qualificationsSearchPanel;
+        }
+    }
+
     static List<string> workFolders;
     public static List<string> WorkFolders
     {
@@ -42,6 +56,7 @@ public partial class App : Application
                     "Судовий розгляд"
                 };
             }
+            workFolders.Sort();
             return workFolders;
         }
     }

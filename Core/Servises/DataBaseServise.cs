@@ -22,6 +22,25 @@ namespace Legasy.Core.Servises
                 caseClass.Files = FileServise.GetFilesFromCase(folder);
                 App.DataBase.Add(caseClass);
             }
+
+            List<string> subresult = new List<string>();
+            foreach (var item in App.DataBase)
+            {
+                
+                if(item.Decsription.Qualification != null)
+                {
+                    subresult.Add(item.Decsription.Qualification);
+                }
+            }
+
+            if (subresult.Count > 0)
+            {
+                subresult = subresult.Distinct().ToList();
+                subresult.Sort();
+            }
+
+            App.QualificationsSearchPanel.Clear();
+            App.QualificationsSearchPanel.AddRange(subresult);
         }
     }
 }

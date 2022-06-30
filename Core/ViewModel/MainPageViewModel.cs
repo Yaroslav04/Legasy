@@ -23,12 +23,7 @@ namespace Legasy.Core.ViewModel
             EditCommand = new Command(Edit);
             DeleteCommand = new Command(Delete);
             Items = new ObservableCollection<CaseClass>();
-            QualificationsSearchPanel = new ObservableCollection<string>();
-            for (int i = 109; i < 447; i++)
-            {
-                QualificationsSearchPanel.Add(i.ToString());
-            }
-
+            QualificationsSearchPanel = new ObservableCollection<string>();        
             WorkFolders = new ObservableCollection<string>(App.WorkFolders);
 
             Clear();       
@@ -158,6 +153,11 @@ namespace Legasy.Core.ViewModel
         {
             Items.Clear();
             DataBaseServise.DataBaseUpload();
+            QualificationsSearchPanel.Clear();
+            foreach (var item in App.QualificationsSearchPanel)
+            {
+                QualificationsSearchPanel.Add(item);
+            }
             LoadAllItems();
             SearchTextSearchPanel = null;
             SelectedQualificationSearchPanel = null;
