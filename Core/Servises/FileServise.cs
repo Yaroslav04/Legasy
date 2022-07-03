@@ -136,6 +136,7 @@ namespace Legasy.Core.Servises
                 {
                     sw.Write(TextServise.ConvertDescriptionToString(_description));
                 }
+                File.SetAttributes(Path.Combine(App.GeneralPath, _name, @"Data\description.ini"), System.IO.FileAttributes.Hidden);
             }
             catch { }
         }
@@ -172,29 +173,44 @@ namespace Legasy.Core.Servises
                             {                              
                                 Directory.CreateDirectory(Path.Combine(directory, workFolder));
                             }
-                        }                     
+                        }
+                        
+                        if (File.Exists(Path.Combine(directory, "description.ini")))
+                        {
+                            File.SetAttributes(Path.Combine(directory, "description.ini"), System.IO.FileAttributes.Hidden);
+                        }
+                    }
+                }
+            }     
+        }
+
+        public static void CleanOldFolders()
+        {
+            foreach (var item in Directory.GetDirectories(App.GeneralPath))
+            {
+                foreach (var directory in Directory.GetDirectories(item))
+                {
+                    if (directory.Replace(item, "") == @"\Data")
+                    {
+                        foreach (var folder in Directory.GetDirectories(directory))
+                        {
+                            bool sw = false;
+                            foreach (var w in App.WorkFolders)
+                            {
+                                if (folder.Contains(w))
+                                {
+                                    sw = true;
+                                }
+                            }
+
+                            if (sw == false)
+                            {
+                                Directory.Delete(folder, true);
+                            }
+                        }
                     }
                 }
             }
-        }
-
-        public static void Clean()
-        {
-            //удалить пустые папки
-            //foreach (var item in Directory.GetDirectories(App.GeneralPath))
-            //{
-            //    foreach (var directory in Directory.GetDirectories(item))
-            //    {
-            //        if (Directory.GetFiles(directory).Length == 0)
-            //        {
-            //            Directory.Delete(directory, true);
-            //        }
-            //    }
-            //}
-
-
-
-            
         }
     }
 }

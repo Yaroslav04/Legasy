@@ -96,7 +96,7 @@
                     <StackLayout>
                         
                         <Label Text="Уголовное дело"></Label>
-                        <Entry Margin="3,3,3,3"    
+                        <Entry Margin="3,3,3,3" IsEnabled="False"   
                        Text="{Binding NameDescription, Mode=TwoWay}"></Entry>
 
                         <Label Text="Статья"></Label>
@@ -106,7 +106,7 @@
                         <Label Text="Описание"></Label>
                         <Entry Margin="3,3,3,3"
                        Text="{Binding DescriptionDescription,  Mode=TwoWay}"></Entry>
-                        
+
                     </StackLayout>
                 </ScrollView>
 
@@ -116,6 +116,8 @@
                         Command="{Binding EditCommand}"/>
                         <Button Text="Удалить" CornerRadius="15" Margin="3,3,3,3" 
                         Command="{Binding DeleteCommand}"/>
+                        <Button Text="Консоль" CornerRadius="15" Margin="3,3,3,3" 
+                        Command="{Binding ConsoleCommand}"/>
                     </StackLayout>
                 </StackLayout>
 

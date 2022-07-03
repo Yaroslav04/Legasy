@@ -38,36 +38,40 @@ public partial class App : Application
         {
             if (workFolders == null)
             {
-                workFolders = new List<string>
-                {
-                    "Вказівки",
-                    "Постанови про скасування закриття",
-                    "Підслідність",
-                    "Допит",
-                    "Обшук",
-                    "Продовження строку",
-                    "Апеляція",
-                    "Апеляція досудове розслідування",
-                    "Службове розслідування",
-                    "Привід",
-                    "Вирок",
-                    "Тимчасовий доступ",
-                    "Арешт майна",
-                    "Судовий розгляд",
-                    "Запобіжний захід"
-                };
+                workFolders = GetWorkFolders();
             }
-            workFolders.Sort();
+
             return workFolders;
         }
     }
 
+    private static List<string> GetWorkFolders()
+    {
+        List<string> result = new List<string>();
+        string text = "";
+        using (StreamReader sr = new StreamReader(Path.Combine(GeneralPath, "work_folders.ini")))
+        {
+            text = sr.ReadToEnd();
+        }
+
+        foreach (var item in text.Split("\n"))
+        {
+            if (!String.IsNullOrWhiteSpace(item))
+            {
+                result.Add(item.Replace("\r", ""));
+            }
+        }
+
+        return result;
+    }
+
     public static string GeneralPath = @"D:\LegasyDB\CriminalCases\";
 
-    public App()
-	{
-		InitializeComponent();
 
-		MainPage = new AppShell();
-	}
+    public App()
+    {
+        InitializeComponent();
+
+        MainPage = new AppShell();
+    }
 }

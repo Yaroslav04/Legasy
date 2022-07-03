@@ -22,12 +22,30 @@ namespace Legasy.Core.ViewModel
             ClearCommand = new Command(Clear);
             EditCommand = new Command(Edit);
             DeleteCommand = new Command(Delete);
+            ConsoleCommand = new Command(ConsoleInput);
             Items = new ObservableCollection<CaseClass>();
             QualificationsSearchPanel = new ObservableCollection<string>();        
             WorkFolders = new ObservableCollection<string>(App.WorkFolders);
 
             Clear();       
             FileServise.WorkFolderUpdate();
+        }
+
+        private async void ConsoleInput()
+        {
+            string result = await Shell.Current.DisplayPromptAsync($"Консоль", $"[delete old folders]");
+            if (result == "delete old folders")
+            {
+                try
+                {
+                    FileServise.CleanOldFolders();
+                    await Shell.Current.DisplayAlert("Консоль", "Выполнено", "OK");
+                }
+                catch
+                {
+                    await Shell.Current.DisplayAlert("Консоль", "Ошибка", "OK");
+                }          
+            }
         }
 
         public void OnAppearing()
@@ -124,6 +142,7 @@ namespace Legasy.Core.ViewModel
         public Command ClearCommand { get; }
         public Command EditCommand { get; }
         public Command DeleteCommand { get; }
+        public Command ConsoleCommand { get; }
 
         #endregion
 
@@ -226,8 +245,7 @@ namespace Legasy.Core.ViewModel
                         }
                     }
                 }
-            }
-            Debug.WriteLine(result.Count);
+            }     
 
             if (SelectedQualificationSearchPanel != null)
             {
@@ -269,7 +287,7 @@ namespace Legasy.Core.ViewModel
                     Clear();
                 }
             }
-            Debug.WriteLine(result.Count);
+          
             
             if (result.Count > 0)
             {
@@ -330,10 +348,8 @@ namespace Legasy.Core.ViewModel
                     FileServise.DeleteDirectory(ItemDescription.Name);
                     Clear();
                 }      
-            }
-                
+            }              
         }
-
         #endregion
     }
 }
