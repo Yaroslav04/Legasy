@@ -213,6 +213,7 @@ namespace Legasy.Core.ViewModel
                             FileServise.CreateNewDirectory(Path.Combine(App.GeneralPath, SearchTextSearchPanel));
                             FileServise.CreateNewDescription(SearchTextSearchPanel, description);
                             await Shell.Current.DisplayAlert("Регистрация нового элемента", "Зарегистритровано", "OK");
+                            FileServise.OpenFolder(Path.Combine(App.GeneralPath, SearchTextSearchPanel));
                             Clear();
                         }
                         else
