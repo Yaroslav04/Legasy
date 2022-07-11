@@ -57,27 +57,24 @@
                         <ContentView>
                             <Frame HasShadow="True" CornerRadius="15" Margin="2" Padding="20">
                                 <StackLayout x:DataType="model:CaseClass">
-                                    
                                     <HorizontalStackLayout WidthRequest="1000" HorizontalOptions="StartAndExpand" Spacing="10">
                                         <Label Text="{Binding Name}"  LineBreakMode="NoWrap"></Label>
                                         <Label  Text="{Binding Decsription.Qualification}"  LineBreakMode="NoWrap"></Label>
                                         <Label  Text="{Binding Decsription.Header}"  LineBreakMode="NoWrap"></Label>
                                     </HorizontalStackLayout>
-
-                                    <StackLayout.GestureRecognizers>
-                                        <TapGestureRecognizer 
+                                </StackLayout>
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer 
                                 NumberOfTapsRequired="1"
                                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainPageViewModel}}, Path=ItemTappedSingle}"		
                                 CommandParameter="{Binding .}">
-                                        </TapGestureRecognizer>
-                                        <TapGestureRecognizer 
+                                    </TapGestureRecognizer>
+                                    <TapGestureRecognizer 
                                 NumberOfTapsRequired="2"
                                 Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MainPageViewModel}}, Path=ItemTappedDouble}"		
                                 CommandParameter="{Binding .}">
-                                        </TapGestureRecognizer>
-                                    </StackLayout.GestureRecognizers>
-
-                                </StackLayout>
+                                    </TapGestureRecognizer>
+                                </Frame.GestureRecognizers>
                             </Frame>
                         </ContentView>
                     </DataTemplate>
@@ -104,7 +101,7 @@
                        Text="{Binding QualificationDescription,  Mode=TwoWay}" MaxLength="3"></Entry>
 
                         <Label Text="Описание"></Label>
-                        <Entry Margin="3,3,3,3"
+                        <Entry Margin="3,3,3,3" MaxLength="20"                             
                        Text="{Binding DescriptionDescription,  Mode=TwoWay}"></Entry>
 
                     </StackLayout>

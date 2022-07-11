@@ -24,16 +24,16 @@ namespace Legasy.Core.ViewModel
             DeleteCommand = new Command(Delete);
             ConsoleCommand = new Command(ConsoleInput);
             Items = new ObservableCollection<CaseClass>();
-            QualificationsSearchPanel = new ObservableCollection<string>();        
+            QualificationsSearchPanel = new ObservableCollection<string>();
             WorkFolders = new ObservableCollection<string>(App.WorkFolders);
 
-            Clear();       
+            Clear();
             FileServise.WorkFolderUpdate();
         }
 
         private async void ConsoleInput()
         {
-            string result = await Shell.Current.DisplayPromptAsync($"Консоль", $"[delete old folders]");
+            string result = await Shell.Current.DisplayPromptAsync($"Консоль", $"[delete old folders], [open main folder]");
             if (result == "delete old folders")
             {
                 try
@@ -44,7 +44,11 @@ namespace Legasy.Core.ViewModel
                 catch
                 {
                     await Shell.Current.DisplayAlert("Консоль", "Ошибка", "OK");
-                }          
+                }
+            }
+            if (result == "open main folder")
+            {
+                FileServise.OpenFolder(FileSystem.Current.AppDataDirectory);
             }
         }
 
@@ -190,63 +194,27 @@ namespace Legasy.Core.ViewModel
         private void LoadAllItems()
         {
             Items.Clear();
-            foreach (var item in App.DataBase)
+            var _list = App.DataBase;
+            _list = _list.OrderBy(x => x.Decsription.Header).ToList();
+            foreach (var item in _list)
             {
                 Items.Add(item);
             }
         }
 
         private async void Search()
-        {     
+        {
             var result = new List<CaseClass>();
-            result.AddRange(App.DataBase);
 
-            if (!String.IsNullOrEmpty(SearchTextSearchPanel))
+            if (App.DataBase.Count > 0)
             {
-                if (TextServise.IsNumberValid(SearchTextSearchPanel))
-                {
-                    if (!FileServise.IsFolderExist(Path.Combine(App.GeneralPath, SearchTextSearchPanel)))
-                    {
-                        var description = await NewElementPromtShell();
-                        if (description != null)
-                        {
-                            FileServise.CreateNewDirectory(Path.Combine(App.GeneralPath, SearchTextSearchPanel));
-                            FileServise.CreateNewDescription(SearchTextSearchPanel, description);
-                            await Shell.Current.DisplayAlert("Регистрация нового элемента", "Зарегистритровано", "OK");
-                            FileServise.OpenFolder(Path.Combine(App.GeneralPath, SearchTextSearchPanel));
-                            Clear();
-                        }
-                        else
-                        {
-                            await Shell.Current.DisplayAlert("Регистрация нового элемента", "Ошибка", "OK");
-                            Clear();
-                        }
-
-                        return;
-                    }
-                    else
-                    {
-                        result = result.Where(x => x.Name == SearchTextSearchPanel).ToList();
-                    }
-                }
-                else
-                {
-                    if (SearchTextSearchPanel.Length > 2)
-                    {
-                        var subresult = result.Where(x => x.Decsription.Header.Contains(SearchTextSearchPanel, StringComparison.OrdinalIgnoreCase)).ToList();
-                        Debug.WriteLine(subresult.Count);
-                        if (subresult.Count > 0)
-                        {                          
-                            result.Clear();
-                            result.AddRange(subresult);
-                        }
-                        else
-                        {
-                            Clear();
-                        }
-                    }
-                }
-            }     
+                result.AddRange(App.DataBase);
+            }
+            else
+            {
+                Clear();
+                return;
+            }
 
             if (SelectedQualificationSearchPanel != null)
             {
@@ -258,9 +226,11 @@ namespace Legasy.Core.ViewModel
                 }
                 else
                 {
+                    await Shell.Current.DisplayAlert("Поиск", "Не найдено", "OK");
                     Clear();
+                    return;
                 }
-               
+
             }
 
             if (WorkFolder != null)
@@ -285,11 +255,80 @@ namespace Legasy.Core.ViewModel
                 }
                 else
                 {
+                    await Shell.Current.DisplayAlert("Поиск", "Не найдено", "OK");
                     Clear();
+                    return;
                 }
             }
-          
-            
+
+            if (!String.IsNullOrWhiteSpace(SearchTextSearchPanel))
+            {
+                if (TextServise.IsNumberValid(SearchTextSearchPanel))
+                {
+                    if (!FileServise.IsFolderExist(Path.Combine(App.GeneralPath, SearchTextSearchPanel)))
+                    {
+                        var description = await NewElementPromtShell();
+                        if (description != null)
+                        {
+                            FileServise.CreateNewDirectory(Path.Combine(App.GeneralPath, SearchTextSearchPanel));
+                            FileServise.CreateNewDescription(SearchTextSearchPanel, description);
+                            await Shell.Current.DisplayAlert("Регистрация нового элемента", "Зарегистритровано", "OK");
+                            FileServise.OpenFolder(Path.Combine(App.GeneralPath, SearchTextSearchPanel));
+                            Clear();
+                            return;
+                        }
+                        else
+                        {
+                            await Shell.Current.DisplayAlert("Регистрация нового элемента", "Ошибка", "OK");
+                            Clear();
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        result = result.Where(x => x.Name == SearchTextSearchPanel).ToList();
+                    }
+                }
+                else
+                {
+                    if (SearchTextSearchPanel.Length > 2)
+                    {
+                        var subresult = result.Where(x => x.Decsription.Header.Contains(SearchTextSearchPanel, StringComparison.OrdinalIgnoreCase)).ToList();
+                        Debug.WriteLine(subresult.Count);
+                        if (subresult.Count > 0)
+                        {
+                            result.Clear();
+                            result.AddRange(subresult);
+                        }
+                        else
+                        {
+                            await Shell.Current.DisplayAlert("Поиск", "Не найдено", "OK");
+                            Clear();
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        await Shell.Current.DisplayAlert("Поиск", "Поиск должен быть минимум 3 буквы", "OK");
+                        Clear();
+                        return;
+                    }
+                }
+            }
+            else
+            {
+                if (WorkFolder != null | SelectedQualificationSearchPanel != null)
+                {
+                   
+                }
+                else
+                {
+                    await Shell.Current.DisplayAlert("Поиск", "Поиск пуст, параметры не выбраны", "OK");
+                    Clear();
+                    return;
+                }
+            }
+
             if (result.Count > 0)
             {
                 Items.Clear();
@@ -297,10 +336,13 @@ namespace Legasy.Core.ViewModel
                 {
                     Items.Add(item);
                 }
+                return;
             }
             else
             {
+                await Shell.Current.DisplayAlert("Поиск", "Не найдено", "OK");
                 Clear();
+                return;
             }
         }
 
@@ -309,7 +351,7 @@ namespace Legasy.Core.ViewModel
         {
             DescriptionClass descriptionClass = new DescriptionClass();
             string _qualification = await Shell.Current.DisplayPromptAsync($"Добавить новое уголовное дело {SearchTextSearchPanel}", $"Введите квалификацию (обязательно):", maxLength: 3);
-            string _header = await Shell.Current.DisplayPromptAsync($"Добавить новое уголовное дело {SearchTextSearchPanel}", $"Введите заголовок:", maxLength: 16);
+            string _header = await Shell.Current.DisplayPromptAsync($"Добавить новое уголовное дело {SearchTextSearchPanel}", $"Введите заголовок:", maxLength: 20);
             if (!String.IsNullOrEmpty(_qualification))
             {
                 descriptionClass.Qualification = _qualification;
@@ -321,7 +363,7 @@ namespace Legasy.Core.ViewModel
                 {
                     descriptionClass.Header = null;
                 }
-               return descriptionClass;
+                return descriptionClass;
             }
             else return null;
         }
@@ -348,8 +390,8 @@ namespace Legasy.Core.ViewModel
                 {
                     FileServise.DeleteDirectory(ItemDescription.Name);
                     Clear();
-                }      
-            }              
+                }
+            }
         }
         #endregion
     }

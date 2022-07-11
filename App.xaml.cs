@@ -1,4 +1,5 @@
 ﻿using Legasy.Core.Model;
+using Legasy.Core.Servises;
 
 namespace Legasy;
 
@@ -49,11 +50,19 @@ public partial class App : Application
     {
         List<string> result = new List<string>();
         string text = "";
-        using (StreamReader sr = new StreamReader(Path.Combine(GeneralPath, "work_folders.ini")))
+        try
         {
-            text = sr.ReadToEnd();
+            using (StreamReader sr = new StreamReader(Path.Combine(FileSystem.Current.AppDataDirectory, "work_folders.ini")))
+            {
+                text = sr.ReadToEnd();
+            }
         }
-
+        catch
+        {
+            FileServise.OpenFolder(FileSystem.Current.AppDataDirectory);
+            return null;
+        }
+        
         foreach (var item in text.Split("\n"))
         {
             if (!String.IsNullOrWhiteSpace(item))
@@ -65,7 +74,39 @@ public partial class App : Application
         return result;
     }
 
-    public static string GeneralPath = @"D:\LegasyDB\CriminalCases\";
+
+    //public static string GeneralPath = @"D:\LegasyDB\CriminalCases\";
+    private static string generalPath = null;
+    public static string GeneralPath
+    {
+        get
+        {
+            if (generalPath == null)
+            {
+                generalPath = GetGeneralPath();
+            }
+            return generalPath;
+        }
+    }
+
+    private static string GetGeneralPath()
+    {
+        string path = null;
+        try
+        {
+            using (StreamReader sr = new StreamReader(Path.Combine(FileSystem.Current.AppDataDirectory, "path.ini")))
+            {
+                path = sr.ReadToEnd();
+            }
+            return path;
+        }
+        catch
+        {
+            FileServise.OpenFolder(FileSystem.Current.AppDataDirectory);
+            return null;
+        }
+        
+    }
 
 
     public App()
