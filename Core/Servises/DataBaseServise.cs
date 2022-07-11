@@ -24,23 +24,27 @@ namespace Legasy.Core.Servises
             }
 
             List<string> subresult = new List<string>();
-            foreach (var item in App.DataBase)
+            if (App.DataBase.Count > 0)
             {
-                
-                if(item.Decsription.Qualification != null)
+                foreach (var item in App.DataBase)
                 {
-                    subresult.Add(item.Decsription.Qualification);
+
+                    if (item.Decsription.Qualification != null)
+                    {
+                        subresult.Add(item.Decsription.Qualification);
+                    }
                 }
-            }
 
-            if (subresult.Count > 0)
-            {
-                subresult = subresult.Distinct().ToList();
-                subresult.Sort();
-            }
+                if (subresult.Count > 0)
+                {
+                    subresult = subresult.Distinct().ToList();
+                    subresult.Sort();
+                }
 
-            App.QualificationsSearchPanel.Clear();
-            App.QualificationsSearchPanel.AddRange(subresult);
+                App.QualificationsSearchPanel.Clear();
+                App.QualificationsSearchPanel.AddRange(subresult);
+            }
+           
         }
     }
 }
